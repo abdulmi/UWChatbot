@@ -1,0 +1,5 @@
+{
+    "appSecret": "PUT_appSecret_HERE_OR_AS_ENV",
+    "pageAccessToken": "PUT_pageAccessToken_HERE_OR_AS_ENV",
+    "validationToken": "PUT_validationToken_HERE_OR_AS_ENV"
+}
