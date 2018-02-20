@@ -20,7 +20,6 @@ var foodPlacesarr = [
  {"name": "H3 Cafe", "places": ["HH"]},
  {"name": "Starbucks", "places": ["STC","BMH","AHS"]},
  {"name": "The Bombshelter Pub", "places": ["SLC"]},
- {"name": "Pastry Plus", "places": ["TC","NH"]},
  {"name": "The Dispensary", "places": ["PHR"]},
  {"name": "International News", "places": ["SLC"]},
  {"name": "Wasabi Sushi", "places": ["SLC"]},

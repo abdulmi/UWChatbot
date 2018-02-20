@@ -70,13 +70,14 @@ var formatRestaurant = function (restaurant,location,hours,callback) {
   }
 };
 
-var findEatingPlace = function (message) {
+var findEatingPlace = function (message, nlpEntityName) {
   console.log("message in findEatingPlace " + message);
   console.log("foodplaces array " + foodPlaces.foodPlacesarr);
+  
   var len = foodPlaces.foodPlacesarr.length;
   for(var i = 0; i < len; i++) {
     var placeName = foodPlaces.foodPlacesarr[i]["name"].toUpperCase();
-    if(message.toUpperCase().indexOf(placeName) !== -1) {
+    if(message.toUpperCase().indexOf(placeName) !== -1 || (nlpEntityName && nlpEntityName.toUpperCase() === placeName)) {
       console.log("found place " + JSON.stringify(foodPlaces.foodPlacesarr[i]));
       return foodPlaces.foodPlacesarr[i];
     }

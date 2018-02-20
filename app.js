@@ -173,6 +173,7 @@ function receivedMessageRead(event) {
  *
  */
 function receivedMessage(event) {
+  console.log(event);
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
   var timeOfMessage = event.timestamp;
@@ -183,8 +184,16 @@ function receivedMessage(event) {
   console.log(JSON.stringify(message));
 
   var messageText = message.text;
+  var nlpEntityName = null;
+  var foodPlaceEntity = null;
+  if (message && message.nlp && message.nlp.entities && message.nlp.entities.food_places) {
+    foodPlaceEntity = message.nlp.entities.food_places; 
+  }
+  if (foodPlaceEntity && foodPlaceEntity[0].confidence >= 0.8) {
+    nlpEntityName = foodPlaceEntity[0].value;
+  }
   if (messageText) {
-    sendTextMessage(senderID, messageText);
+    sendTextMessage(senderID, messageText, nlpEntityName);
   }
 }
 
@@ -192,8 +201,8 @@ function receivedMessage(event) {
  * Send a text message using the Send API.
  *
  */
-function sendTextMessage(recipientId, messageText) {
-  analyzeMessage(messageText,function(res) {
+function sendTextMessage(recipientId, messageText, nlpEntityName) {
+  analyzeMessage(messageText, nlpEntityName, function(res) {
     var messageData = {
       recipient: {
         id: recipientId
@@ -212,7 +221,7 @@ function sendTextMessage(recipientId, messageText) {
 /*
 * analyzing message based on differnet categories(exams, open hours, lectures...)
 */
-function analyzeMessage(message,callback) {
+function analyzeMessage(message, nlpEntityName, callback) {
   var messageStr = String(message);
   var upperText = messageStr.toUpperCase();
   if(upperText.indexOf("EXAM") != -1) {
@@ -226,9 +235,9 @@ function analyzeMessage(message,callback) {
     });
   }
   else if(upperText.indexOf("HOURS") != -1) {
-    var foodObject = Food.findEatingPlace(message);
+    var foodObject = Food.findEatingPlace(message, nlpEntityName);
     if(foodObject != null) {
-      var foodLocation = Food.findFoodBuilding(message,foodObject);
+      var foodLocation = Food.findFoodBuilding(message, foodObject);
       Food.formatRestaurant(foodObject["name"],foodLocation,true,function(formattedAnswer) {
         callback(formattedAnswer);
       });
@@ -236,9 +245,9 @@ function analyzeMessage(message,callback) {
       callback("food place invalid")
     }
   } else if(upperText.indexOf("OPEN") != -1) {
-    var foodObject = Food.findEatingPlace(message);
+    var foodObject = Food.findEatingPlace(message, nlpEntityName);
     if(foodObject != null) {
-      var foodLocation = Food.findFoodBuilding(message,foodObject);
+      var foodLocation = Food.findFoodBuilding(message, foodObject);
       Food.formatRestaurant(foodObject["name"],foodLocation,false,function(formattedAnswer) {
         callback(formattedAnswer);
       });
